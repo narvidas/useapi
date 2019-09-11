@@ -1,8 +1,20 @@
-# useApi custom fetching React hook
+# useApi - a handy React hook for fetching with Axios
 
 ## Introduction
 
-The useApi React hook is a small utility for React applications that abstracts away the fetching, loading and error handling when communicating to a remote API asynchronously in JavaScript using Axios.
+The useApi React hook is a small utility for React applications that abstracts away the fetching, loading and error handling when communicating to a remote API asynchronously using [axios](https://github.com/axios/axios).
+
+## Specifics
+
+A typical way to consume useApi is as follows: `const [response, trigger] = useApi(axiosCall)`
+
+In above snippet the `useApi` hook consumes an Axios HTTP method to a resource (get, post, put, etc.) and returns two items back:
+
+- `trigger` - a function, that once called will initiate the API call (can be awaited)
+- `response` object that in itself contains:
+    - `error` (error message if any was returned during fetching)
+    - `isFetching` (boolean to indicate that the fetch is ongoing)
+    - `result` (the result returned from the endpoint)
 
 ## Installation
 
@@ -10,7 +22,7 @@ The useApi React hook is a small utility for React applications that abstracts a
 
 ## Sample usage
 
-### Fetch using lifecycle methods
+### Fetch during component lifecycle
 
 ```jsx
 import React, { FC } from "react";
@@ -48,9 +60,11 @@ export const Sample: FC = () => {
   if (response.loading) return <div>Loading...</div>;
 
   // Below we show the result (if exists yet) and render a button that will initiate fetches
-  return <>
-    <button onClick={()=> await trigger()}>Trigger re-fetch</button>
-    <div>{(response && response.result) || ""}</div>
-  </>;
+  return (
+    <>
+      <button onClick={trigger}>Trigger re-fetch</button>
+      <div>{(response && response.result) || ""}</div>
+    </>
+  );
 };
 ```
